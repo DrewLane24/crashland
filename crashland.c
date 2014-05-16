@@ -35,6 +35,7 @@
 #include "fonts.h"
 
 #include "move.h"
+#include "plaforms.h"
 #define USE_SOUND
 
 #ifdef USE_SOUND
@@ -113,11 +114,13 @@ Bigfoot bigfoot;
 //Bigfoot bigfoot;
 Ppmimage *bigfootImage=NULL;
 Ppmimage *marsImage=NULL;
+Ppmimage *pFormImage=NULL;
 Ppmimage *forestTransImage=NULL;
 Ppmimage *robotImage=NULL;
 GLuint bigfootTexture;
 GLuint silhouetteTexture;
 GLuint marsTexture;
+GLuint pFormTexture;
 GLuint forestTransTexture;
 GLuint robotTexture;
 int show_bigfoot=0;
@@ -169,6 +172,9 @@ int show_umbrella=0;
 int deflection=0;
 #endif //USE_UMBRELLA
 
+Platforms platforms;
+Platforms platforms2;
+int show_platforms=0;
 
 int main(void)
 {
@@ -350,6 +356,7 @@ void init_opengl(void)
 	//
 	bigfootImage     = ppm6GetImage("./images/bigfoot.ppm");
 	marsImage      = ppm6GetImage("./images/mars.ppm");
+    pFormIage       = ppm6GetImage("./images/pForm.ppm");
 	forestTransImage = ppm6GetImage("./images/forestTrans.ppm");
 	robotImage    = ppm6GetImage("./images/Robot.ppm");
 	//
@@ -357,6 +364,7 @@ void init_opengl(void)
 	glGenTextures(1, &bigfootTexture);
 	glGenTextures(1, &silhouetteTexture);
 	glGenTextures(1, &marsTexture);
+	glGenTextures(1, &pFormTexture);
 	glGenTextures(1, &robotTexture);
 	//-------------------------------------------------------------------------
 	//bigfoot
@@ -430,6 +438,13 @@ void init_opengl(void)
 	//glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0,
 	//GL_RGB, GL_UNSIGNED_BYTE, bigfootImage->data);
 	//-------------------------------------------------------------------------
+    //platforms 
+    glBindTexture(GL_TEXTURE_2D, pFormTexture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3,
+                            pFormImage->width, pFormImage->height,
+                            0, GL_RGB, GL_UNSIGNED_BYTE, pFormImage->data); 
 }
 
 void check_resize(XEvent *e)
@@ -477,6 +492,20 @@ void init() {
 	umbrella.radius = (float)umbrella.width2;
 	umbrella.shape = UMBRELLA_FLAT;
 	#endif //USE_UMBRELLA
+    #ifdef USE_PLATFORMS
+    platforms.pos[0] = 220.0;
+    platforms.pos[1] = (double)(yres-450);
+    VecCopy(platforms.pos, platforms.lastpos);
+    platforms.width = 200.0;
+    platforms.width2 = platforms.width * 0.5;
+    platforms.radius = (float)platforms.width2;
+    platforms2.pos[0] = 500.0;
+    platforms2.pos[1] = (double)(yres-350);
+    VecCopy(platforms2.pos, platforms2.lastpos);
+    platforms2.width = 100.0;
+    platforms2.width2 = platforms2.width * 0.5;
+    platforms2.radius = (float)platforms2.width2;
+    #endif //USE_PLATFORMS
 	MakeVector(-150.0,180.0,0.0, bigfoot.pos);
 	MakeVector(6.0,0.0,0.0, bigfoot.vel);
 }
@@ -562,7 +591,9 @@ void check_keys(XEvent *e)
 	//			if (!show_rain)
 	//				cleanup_raindrops();
 				break;
-
+			case XK_g:
+				show_platforms ^= 1;
+				break;
 			case XK_space :
 				gravRobot();
 				break;
@@ -1016,6 +1047,10 @@ void render(void)
 	if (show_umbrella)
 		draw_umbrella();
 	#endif //USE_UMBRELLA
+    #ifdef USE_PLATFORMS
+	if (show_platforms)
+		draw_platforms();
+	#endif //USE_PLATFORMS
 	glBindTexture(GL_TEXTURE_2D, 0);
 	//
 	//

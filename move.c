@@ -25,6 +25,7 @@ void showMenus()
 	ggprint8b(&r, 16, 0, "Andrew Lane");
 	ggprint8b(&r, 16, 0, "Framework by Gordon");
 	ggprint8b(&r, 16, 0, "Music does not belong to this program");
+	ggprint8b(&r, 16, 0, "\n\nPress g for platforms");
 }
 
 void showMenus2()
