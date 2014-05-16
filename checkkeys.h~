@@ -1,0 +1,108 @@
+#ifndef _CHECKKEYS_H
+#define _CHECKKEYS_H
+
+void check_keys(XEvent *e)
+{
+    //keyboard input?
+    static int shift=0;
+    int key = XLookupKeysym(&e->xkey, 0);
+    if (e->type == KeyRelease) {
+	if (key == XK_Shift_L || key == XK_Shift_R)
+	    shift=0;
+	return;
+    }
+    if (e->type == KeyPress) {
+	if (key == XK_Shift_L || key == XK_Shift_R) {
+	    shift=1;
+	    return;
+	}
+    } else {
+	return;
+    }
+    //if (e->type == KeyPress) {
+    //int key = XLookupKeysym(&e->xkey, 0);
+    switch(key) {
+	case XK_b:
+	    show_bigfoot ^= 1;
+	    if (show_bigfoot) {
+		bigfoot.pos[0] = -250.0;
+	    }
+	    break;
+	case XK_m:
+	    show_redmoon ^= 1;
+	    if (show_redmoon) {
+		redmoon.pos[0] = 500.0;
+		redmoon.pos[1] = 380.0;
+	    }
+	    break;
+	case XK_d:
+	    deflection ^= 1;
+	    break;
+	case XK_f:
+	    forest ^= 1;
+	    break;
+	case XK_s:
+	    silhouette ^= 1;
+	    printf("silhouette: %i\n",silhouette);
+	    break;
+	case XK_t:
+	    trees ^= 1;
+	    break;
+	case XK_u:
+	    show_umbrella ^= 1;
+	    break;
+	case XK_p:
+	    umbrella.shape ^= 1;
+	    break;
+	case XK_r:
+	    show_rain ^= 1;
+	    //			if (!show_rain)
+	    //				cleanup_raindrops();
+	    break;
+	case XK_Left:
+	    VecCopy(umbrella.pos, umbrella.lastpos);
+	    umbrella.pos[0] -= 10.0;
+	    break;
+	case XK_Right:
+	    VecCopy(umbrella.pos, umbrella.lastpos);
+	    umbrella.pos[0] += 10.0;
+	    break;
+	case XK_Up:
+	    VecCopy(umbrella.pos, umbrella.lastpos);
+	    umbrella.pos[1] += 10.0;
+	    break;
+	case XK_Down:
+	    VecCopy(umbrella.pos, umbrella.lastpos);
+	    umbrella.pos[1] -= 10.0;
+	    break;
+	case XK_equal:
+	    if (++ndrops > 40)
+		ndrops=40;
+	    break;
+	case XK_minus:
+	    if (--ndrops < 0)
+		ndrops = 0;
+	    break;
+	case XK_n:
+	    play_sounds ^= 1;
+	    break;
+	case XK_w:
+	    if (shift) {
+		//shrink the umbrella
+		umbrella.width *= (1.0 / 1.05);
+	    } else {
+		//enlarge the umbrella
+		umbrella.width *= 1.05;
+	    }
+	    //half the width
+	    umbrella.width2 = umbrella.width * 0.5;
+	    umbrella.radius = (float)umbrella.width2;
+	    break;
+	case XK_Escape:
+	    done=1;
+	    break;
+    }
+    //}
+}
+
+#endif

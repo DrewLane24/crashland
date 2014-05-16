@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+#include <math.h>
+#include <X11/Xlib.h>
+//#include <X11/Xutil.h>
+#include <X11/keysym.h>
+//#include <GL/gl.h>
+#include <GL/glx.h>
+//#include <GL/glu.h>
+#include "log.h"
+#include "ppm.h"
+#include "fonts.h"
+//#include "struct.h"
+
+#define MakeVector(x, y, z, v) (v)[0]=(x),(v)[1]=(y),(v)[2]=(z)
+#define VecCopy(a,b) (b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2]
+int xres=800, yres=600;
+typedef struct t_redmoon {
+	int shape;
+	Vec pos;
+	Vec lastpos;
+	float width;
+	float width2;
+	float radius;
+	//Vec pos;
+	//Vec vel;
+} Redmoon;
+Redmoon redmoon;
+
+typedef struct t_umbrella {
+	int shape;
+	Vec pos;
+	Vec vel;
+	Vec lastpos;
+	float angle;
+	float width;
+	float width2;
+	float radius;
+} Umbrella;
+Umbrella umbrella;
+int show_umbrella=0;
+int deflection=0;
+
+
+void init() {
+#ifdef USE_UMBRELLA
+	umbrella.pos[0] = 220.0;
+	umbrella.pos[1] = (double)(yres-200);
+	VecCopy(umbrella.pos, umbrella.lastpos);
+	umbrella.width = 200.0;
+	umbrella.width2 = umbrella.width * 0.5;
+	umbrella.radius = (float)umbrella.width2;
+	umbrella.shape = UMBRELLA_FLAT;
+#endif //USE_UMBRELLA
+
+
+	redmoon.pos[0] = 220.0;
+	redmoon.pos[1] = (double)(yres-200);
+	VecCopy(redmoon.pos, redmoon.lastpos);
+	redmoon.width = 200.0;
+	redmoon.width2 = redmoon.width * 0.5;
+	redmoon.radius = (float)redmoon.width2;
+	//mbrella.shape = UMBRELLA_FLAT;
+
+	//MakeVector(-150.0,180.0,0.0, bigfoot.pos);
+	MakeVector(150.0,180.0,0.0, redmoon.pos);//here
+	//MakeVector(6.0,0.0,0.0, bigfoot.vel);
+}
