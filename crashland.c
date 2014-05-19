@@ -35,7 +35,7 @@
 #include "fonts.h"
 
 #include "move.h"
-#include "plaforms.h"
+#include "platforms.h"
 #define USE_SOUND
 
 #ifdef USE_SOUND
@@ -356,7 +356,7 @@ void init_opengl(void)
 	//
 	bigfootImage     = ppm6GetImage("./images/bigfoot.ppm");
 	marsImage      = ppm6GetImage("./images/mars.ppm");
-    pFormIage       = ppm6GetImage("./images/pForm.ppm");
+    pFormImage       = ppm6GetImage("./images/pForm.ppm");
 	forestTransImage = ppm6GetImage("./images/forestTrans.ppm");
 	robotImage    = ppm6GetImage("./images/Robot.ppm");
 	//
